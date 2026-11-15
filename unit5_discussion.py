@@ -177,6 +177,60 @@ def main():
     print("  Linear Search -", linear_search(first_pos, 5))
     print("  Binary Search -", binary_search(first_pos, 5))
 
+    # --------------------------------------------------------------
+    # Real‑world contact‑list scenario
+    # --------------------------------------------------------------
+    #
+    # Imagine a phone’s address book. If contacts are stored in the order
+    # you entered them (unsorted), you can only perform a linear search.
+    # Sorting the list once lets you use binary search, which is far faster
+    # for repeated look‑ups. The code below measures the number of
+    # examined elements for each approach to illustrate the preparation
+    # vs. speed trade‑off.
+
+    contacts_unsorted = [
+        "Zoe Patel", "Aaron Smith", "Mia Chen", "Liam O'Neil",
+        "Emily Davis", "Noah Brown", "Olivia Wilson", "Ethan Garcia",
+        "Sophia Martinez", "Lucas Kim"
+    ]
+    target_name = "Emily Davis"
+
+    # ---- Linear search on the unsorted phonebook ----
+    lin_steps = 0
+    for i, name in enumerate(contacts_unsorted):
+        lin_steps += 1
+        if name == target_name:
+            lin_index = i
+            break
+    else:
+        lin_index = -1
+
+    # ---- Sort the contacts (pre‑search preparation) ----
+    contacts_sorted = sorted(contacts_unsorted)
+
+    # ---- Binary search on the sorted phonebook ----
+    low, high, bin_steps = 0, len(contacts_sorted) - 1, 0
+    while low <= high:
+        bin_steps += 1
+        mid = (low + high) // 2
+        if contacts_sorted[mid] == target_name:
+            bin_index = mid
+            break
+        elif contacts_sorted[mid] < target_name:
+            low = mid + 1
+        else:
+            high = mid - 1
+    else:
+        bin_index = -1
+
+    print("\n--- Real‑World Contact Search Scenario ---")
+    print(f"Unsorted contacts: {contacts_unsorted}")
+    print(f"Target name: '{target_name}'")
+    print(f"Linear search -> index {lin_index}, steps examined = {lin_steps}")
+    print(f"Sorted contacts:   {contacts_sorted}")
+    print(f"Binary search -> index {bin_index}, steps examined = {bin_steps}")
+
+
 
 if __name__ == "__main__":
     main()
