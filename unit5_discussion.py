@@ -13,6 +13,8 @@ and clearly explaining your results through code comments
 and program output.
 """
 
+import random  # needed for the random dataset
+
 
 def linear_search(lst, target):
     """
@@ -26,7 +28,13 @@ def linear_search(lst, target):
     - Add comments explaining why linear search
       has O(n) time complexity.
     """
-    pass
+    # Linear search examines each element sequentially.
+    # In the worst case it looks at every item - O(n) time.
+    for index, value in enumerate(lst):
+        if value == target:          # Found the target; return its position.
+            return index
+    return -1                       # Target not present after examining all items.
+
 
 
 def binary_search(lst, target):
@@ -42,7 +50,23 @@ def binary_search(lst, target):
     - Add comments explaining how each iteration
       reduces the search space.
     """
-    pass
+    low = 0
+    high = len(lst) - 1
+
+    # Each loop cuts the remaining range in half - O(log n) time.
+    while low <= high:
+        mid = (low + high) // 2          # Middle index of current range.
+        mid_val = lst[mid]
+
+        if mid_val == target:            # Target found.
+            return mid
+        elif mid_val < target:           # Target must be in the right half.
+            low = mid + 1
+        else:                            # Target must be in the left half.
+            high = mid - 1
+
+    return -1                             # Target not found default -1 
+
 
 
 def main():
@@ -61,7 +85,23 @@ def main():
     # 4. Use comments to clearly explain the results.
 
     print("\n=== SMALL DATASET TEST ===")
-    print("TODO: Create a small dataset and test both searches.")
+    small_dataset = [3, 8, 15, 23, 42]
+
+    # Test searches for an existing value
+    existing_val = 23
+    lin_idx = linear_search(small_dataset, existing_val)
+    bin_idx = binary_search(small_dataset, existing_val)
+    print(f"Searching for existing value {existing_val}:")
+    print(f"  Linear Search - index {lin_idx} (found)" if lin_idx != -1 else "  Linear Search - not found")
+    print(f"  Binary Search - index {bin_idx} (found)" if bin_idx != -1 else "  Binary Search - not found")
+
+    # Test searches for a missing value
+    missing_val = 7
+    lin_idx = linear_search(small_dataset, missing_val)
+    bin_idx = binary_search(small_dataset, missing_val)
+    print(f"\nSearching for missing value {missing_val}:")
+    print(f"  Linear Search - {'not found' if lin_idx == -1 else f'index {lin_idx} (incorrect)'}")
+    print(f"  Binary Search - {'not found' if bin_idx == -1 else f'index {bin_idx} (incorrect)'}")
 
     # ===============================
     # TODO (Student): LARGE DATASET
@@ -75,7 +115,30 @@ def main():
     #    efficient as datasets grow larger.
 
     print("\n=== LARGE DATASET TEST ===")
-    print("TODO: Create a larger dataset and compare results.")
+    # 1. Random sorted dataset with 50 elements (mirrors the small dataset size but is larger)
+    random.seed(0)                          # make the result reproducible
+    large_dataset = sorted(random.sample(range(1, 101), 50))
+    print(f"Dataset (50 sorted random numbers): {large_dataset}")
+
+    # 2. Search for an existing value (choose one from roughly the middle of the list)
+    middle_index = len(large_dataset) // 2   # programmatic “half” of the list
+    existing_large = large_dataset[middle_index]
+    lin_idx = linear_search(large_dataset, existing_large)
+    bin_idx = binary_search(large_dataset, existing_large)
+    print(f"\nSearching for existing value {existing_large}:")
+    print(f"  Linear Search - index {lin_idx}")
+    print(f"  Binary Search - index {bin_idx}")
+    # Comment: Even with only 50 items, linear search may need to look at many entries,
+    # while binary search finishes in a handful of comparisons.
+
+    # 3. Search for a missing value (pick a number guaranteed not to be in the list)
+    missing_large = 101                     # outside the range used for sampling
+    lin_idx = linear_search(large_dataset, missing_large)
+    bin_idx = binary_search(large_dataset, missing_large)
+    print(f"\nSearching for missing value {missing_large}:")
+    print(f"  Linear Search - {'not found' if lin_idx == -1 else f'index {lin_idx} (incorrect)'}")
+    print(f"  Binary Search - {'not found' if bin_idx == -1 else f'index {bin_idx} (incorrect)'}")
+    # Comment: Binary search’s advantage is evident even on a modestly sized list.
 
     # ===============================
     # TODO (Student): EDGE CASES
@@ -93,7 +156,26 @@ def main():
     # Explain what happens in each case.
 
     print("\n=== EDGE CASE TESTS ===")
-    print("TODO: Demonstrate and explain edge cases.")
+
+    # Edge case 1: Empty list
+    empty_list = []
+    print("\nEdge case - empty list:")
+    print("  Linear Search -", linear_search(empty_list, 10))
+    print("  Binary Search -", binary_search(empty_list, 10))
+    # Both return -1 because there is nothing to search.
+
+    # Edge case 2: Single-element list (target present)
+    single_present = [42]
+    print("\nEdge case - single-element list, value present (42):")
+    print("  Linear Search -", linear_search(single_present, 42))
+    print("  Binary Search -", binary_search(single_present, 42))
+    # Both return index 0; binary search works with low == high.
+
+    # Edge case 4: Value at first position
+    first_pos = [5, 12, 19, 27]
+    print("\nEdge case - value at first position (5):")
+    print("  Linear Search -", linear_search(first_pos, 5))
+    print("  Binary Search -", binary_search(first_pos, 5))
 
 
 if __name__ == "__main__":
